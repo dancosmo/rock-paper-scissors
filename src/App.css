@@ -1,38 +1,128 @@
-.App {
-  text-align: center;
+.app{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+
+    
+    background-color: #85c0ff;
+    background-image: linear-gradient(45deg, #85c0ff 0%, #ff7d7f 100%);
+
+
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.games-container{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.player-vs-machine-container{
+    display:flex;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.title{
+    margin: 10px 0 10px 0;
+    font-weight: bold;
 }
 
-.App-link {
-  color: #61dafb;
+.player-one-container{
+   margin-top: auto;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.vs-machine-result-container{
+    margin-top: auto;
+    font-size: xx-large;
 }
+
+.player-vs-player-container{
+    display: flex;
+    align-items: center;
+    margin-bottom: auto;
+    width: 100%;
+    height: 100px;
+    margin-top: auto;
+
+}
+
+.player-blue-container{
+    display: flex;
+}
+
+.player-red-container{
+    display: flex;
+    margin-left: auto;
+}
+
+.player-blue-buttons{
+    margin-bottom: 5px;
+    align-items: center;
+    flex-direction: column;
+}
+
+.player-red-buttons{
+    margin-bottom: 5px;
+    align-items: center;
+    flex-direction: column;
+}
+
+.flex-visible{
+    display: flex;
+}
+
+.flex-not-visible{
+    display: none;
+}
+
+.result-timer{
+    font-size: larger;
+    font-weight: bolder;
+}
+
+.menu-container{
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    flex-direction: row;
+    width: 100%;
+}
+
+.header{
+    font-size: large;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.result-container{
+    font-size: 2em;
+}
+
+.player-selector-container{
+    text-align: center;
+}
+
+.game-buttons-container button{
+        border-radius: 100px;
+}
+
+.render-blue-choice{
+    font-size: xx-large;
+    margin-left: auto;
+}
+.render-red-choice{
+    font-size: xx-large;
+    margin-left: auto;
+}
+
+.footer {
+    display: flex;
+    position: absolute;
+        right: 0;
+        bottom: 0;
+    }
