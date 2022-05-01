@@ -32,6 +32,22 @@ const PlayerVsHuman = () => {
 
   const popInOut = useRef(null);
 
+  document.addEventListener('visibilitychange', function(){
+    if(blueSelection === "selected"){
+      setDoc(doc(db, "users", "blue"), {
+        spot: "available",
+        playAgain:false,
+      });
+    }
+    if(redSelection === "selected"){
+      setDoc(doc(db, "users", "red"), {
+        spot: "available",
+        playAgain:false,
+      });
+    }
+    else return;
+  });
+
   useEffect(() => {
     let blueUserStatus = onSnapshot(doc(db, "users", "blue"), (doc) => {
       setBluePlayerData(doc.data());
@@ -245,7 +261,7 @@ const PlayerVsHuman = () => {
 
   const renderCountDownResult = () => {
     const finalResult = String(result);
-    return <h2 style={{fontFamily: "Audiowide", fontSize:"45px"}} ref={popInOut}>{finalResult}</h2>
+    return <h2 className="result" ref={popInOut}>{finalResult}</h2>
   }
 
   const selectionCallBack = (data) => {

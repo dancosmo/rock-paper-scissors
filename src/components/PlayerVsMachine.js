@@ -190,14 +190,14 @@ const PlayerVsMachine = () => {
   const renderCountDownResult = () => {
     const result = String(countDownResult);
 
-    return <h2 style={{fontFamily: "Audiowide", fontSize:"45px"}} ref={popInOut}>{result}</h2>
+    return <h2 className="result" ref={popInOut}>{result}</h2>
   }
 
   return (
     <div
       className="player-vs-machine-container"
     >
-      <img style={{width:"200px"}} src={robotImage} alt="robot"></img>
+      <img style={{width:"150px"}} src={robotImage} alt="robot"></img>
       <div>{renderMachineChoice()} </div>
       <div className="vs-machine-result-container">
         {renderCountDownResult()} {startTimer()}

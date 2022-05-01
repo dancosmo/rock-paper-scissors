@@ -12,6 +12,40 @@ body{
   background-image: linear-gradient(45deg, #85c0ff 0%, #ff7d7f 100%);
 }
 
+@media only screen and (max-width: 660px) {
+    .header{
+        font-size: 10px !important;
+    }
+    .chakra-button{
+        font-size: 10px !important;
+    }
+    .footer{
+        font-size: 10px !important;
+        right: 210px !important;
+        bottom: 125px !important;
+    }
+    .render-blue-choice{
+        font-size: small !important;
+    }
+    .render-blue-choice img{
+        width: 30px !important;
+    }
+    .render-red-choice{
+        font-size: small !important;
+    }
+    .render-red-choice img{
+        width: 30px !important;
+    }
+    .result{
+        font-size:"30px" !important;
+    }
+}
+
+.result{
+    font-family: "Audiowide";
+    font-size:"45px",
+}
+
 .games-container {
   height: 100%;
   width: 100%;
@@ -78,11 +112,6 @@ body{
 
 .flex-not-visible {
   display: none;
-}
-
-.result-timer {
-  font-size: larger;
-  font-weight: bolder;
 }
 
 .menu-container {
@@ -157,3 +186,5 @@ body{
 .pop-outin {
   animation: 1s anim-popoutin ease infinite;
 }
+
+
