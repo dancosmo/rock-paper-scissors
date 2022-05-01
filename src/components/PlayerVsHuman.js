@@ -45,7 +45,7 @@ const PlayerVsHuman = () => {
         playAgain:false,
       });
     }
-    else return;
+    else return null;
   });
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const PlayerVsHuman = () => {
         });
     });
     }
-    else return;
+    else return null;
   }
   closingWindow();
 
@@ -124,7 +124,7 @@ const PlayerVsHuman = () => {
         }, 1000);
         setOnce(0);
       }
-    } else return;
+    } else return null;
   };
 
   const playAgainButton = () => {
@@ -261,7 +261,9 @@ const PlayerVsHuman = () => {
 
   const renderCountDownResult = () => {
     const finalResult = String(result);
-    return <h2 className="result" ref={popInOut}>{finalResult}</h2>
+    if(typeof finalResult === "string"){
+      return <h2 className="result" ref={popInOut}>{finalResult}</h2>
+    }
   }
 
   const selectionCallBack = (data) => {
@@ -369,6 +371,7 @@ const PlayerVsHuman = () => {
         );
       }
     }
+    else return null;
   };
 
   const renderRedPlayerChoice = () => {
@@ -404,6 +407,7 @@ const PlayerVsHuman = () => {
         );
       }
     }
+    else return null;
   };
 
   return (

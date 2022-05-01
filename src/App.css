@@ -17,11 +17,11 @@ body{
         font-size: 10px !important;
     }
     .chakra-button{
-        font-size: 10px !important;
+        font-size: 12px !important;
     }
     .footer{
         font-size: 10px !important;
-        right: 210px !important;
+        right: 0px !important;
         bottom: 125px !important;
     }
     .render-blue-choice{
