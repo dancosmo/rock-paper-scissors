@@ -33,7 +33,7 @@ const PlayerVsHuman = () => {
   const popInOut = useRef(null);
 
   document.addEventListener('visibilitychange', function(){
-    if(document.visibilityState !== 'visible'){
+    if(document.visibilityState !== 'visible' || document.visibilityState !== 'hidden'){
       if(blueSelection === "selected"){
         setDoc(doc(db, "users", "blue"), {
           spot: "available",
