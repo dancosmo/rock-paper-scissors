@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import VsMachineButton from "./VsMachineButton";
 import { Button } from "@chakra-ui/react";
 import lostSound from "../sounds/lost-sound.mp3";
@@ -17,6 +17,8 @@ const PlayerVsMachine = () => {
   const [countDownResult, setCountDownResult] = useState(3);
   const [runOnce, setRunOnce] = useState(1);
   const [playAgain, setPlayAgain] = useState(true);
+
+  const popInOut = useRef(null);
 
   useEffect(() => {
     const defineMachineChoice = () => {
@@ -43,8 +45,6 @@ const PlayerVsMachine = () => {
     setMachineNumber(Math.floor(Math.random() * 3) + 1);
     setPlayerChoice(choice);
     setPlayAgain(false);
-    console.log(machineChoiceFinal);
-  
   };
   
 
@@ -104,6 +104,7 @@ const PlayerVsMachine = () => {
       setCountDownResult(3);
       setRunOnce(1);
       setPlayAgain(true);
+      popInOut.current.classList.remove('pop-outin');
   }
 
   let countStart = 3;
@@ -117,10 +118,11 @@ const PlayerVsMachine = () => {
             getResult();
           } else {
             beep.play();
+            popInOut.current.classList.add('pop-outin');
             countStart -= 1;
             setCountDownResult(countStart);
           }
-        }, 600);
+        }, 1000);
         setRunOnce(0);
       }
     }
@@ -130,7 +132,7 @@ const PlayerVsMachine = () => {
     const won = new Audio(winSound);
     const lost = new Audio(lostSound);
     if (machineChoiceFinal === playerChoice) {
-      setCountDownResult("Its a Draw!");
+      setCountDownResult("It's a Draw!");
       lost.play();
     }
     if (machineChoiceFinal === "Rock" && playerChoice === "Paper") {
@@ -185,6 +187,12 @@ const PlayerVsMachine = () => {
     else return null;
   }
 
+  const renderCountDownResult = () => {
+    const result = String(countDownResult);
+
+    return <h2 style={{fontFamily: "Audiowide", fontSize:"45px"}} ref={popInOut}>{result}</h2>
+  }
+
   return (
     <div
       className="player-vs-machine-container"
@@ -192,7 +200,7 @@ const PlayerVsMachine = () => {
       <img style={{width:"200px"}} src={robotImage} alt="robot"></img>
       <div>{renderMachineChoice()} </div>
       <div className="vs-machine-result-container">
-        {countDownResult} {startTimer()}
+        {renderCountDownResult()} {startTimer()}
       </div>
       <div className="player-one-container">
         {renderPlayerChoice()}

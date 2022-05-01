@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { db } from "../firebase";
 import { doc, onSnapshot, updateDoc, setDoc } from "firebase/firestore";
 import GameButton from "./GameButton";
@@ -26,11 +26,11 @@ const PlayerVsHuman = () => {
 
   const [once, setOnce] = useState(1);
 
-  const [resultTimer, setResultTimer] = useState(3);
-
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState(3);
 
   const [playVisible, setPlayVisible] = useState("flex-visible");
+
+  const popInOut = useRef(null);
 
   useEffect(() => {
     let blueUserStatus = onSnapshot(doc(db, "users", "blue"), (doc) => {
@@ -85,7 +85,7 @@ const PlayerVsHuman = () => {
       console.log("Im working");
       if (once === 1) {
         let timer = setInterval(function () {
-          if (countStart <= 0) {
+          if (countStart === 0) {
             calculateResult();
             clearInterval(timer);
             if (blueSelection === "selected") {
@@ -100,7 +100,8 @@ const PlayerVsHuman = () => {
             }
           } else {
             countStart -= 1;
-            setResultTimer(countStart);
+            setResult(countStart);
+            popInOut.current.classList.add('pop-outin');
             setPlayVisible("flex-not-visible");
             beep.play();
           }
@@ -111,7 +112,7 @@ const PlayerVsHuman = () => {
   };
 
   const playAgainButton = () => {
-    if (blueSelection === "selected" && resultTimer === 0) {
+    if (blueSelection === "selected" && typeof result !== "number") {
       return (
         <Button
           size="md"
@@ -129,7 +130,7 @@ const PlayerVsHuman = () => {
         </Button>
       );
     }
-    if (redSelection === "selected" && resultTimer === 0) {
+    if (redSelection === "selected" && typeof result !== "number") {
       return (
         <Button
           size="md"
@@ -150,10 +151,10 @@ const PlayerVsHuman = () => {
   };
 
   const playAgain = async () => {
+    popInOut.current.classList.remove('pop-outin');
     const click = new Audio(clickSound);
     click.play();
-    setResultTimer(3);
-    setResult(null);
+    setResult(3);
     setPlayVisible("flex-visible");
     if (blueSelection === "selected") {
       setBluePlayerChoice(null);
@@ -170,7 +171,6 @@ const PlayerVsHuman = () => {
         playAgain: false,
         choice: null,
       });
-
       setOnce(1);
     }
   };
@@ -182,7 +182,7 @@ const PlayerVsHuman = () => {
     const lost = new Audio(lostSound);
     if (blueSelection === "selected") {
       if (blueChoice === redChoice) {
-        setResult("Its a Draw!");
+        setResult("It's a Draw!");
         lost.play();
       }
       if (blueChoice === "Rock" && redChoice === "Paper") {
@@ -213,7 +213,7 @@ const PlayerVsHuman = () => {
     }
     if (redSelection === "selected") {
       if (blueChoice === redChoice) {
-        setResult("Its a Draw!");
+        setResult("It's a Draw!");
         lost.play();
       }
       if (blueChoice === "Rock" && redChoice === "Paper") {
@@ -243,14 +243,20 @@ const PlayerVsHuman = () => {
     }
   };
 
+  const renderCountDownResult = () => {
+    const finalResult = String(result);
+    return <h2 style={{fontFamily: "Audiowide", fontSize:"45px"}} ref={popInOut}>{finalResult}</h2>
+  }
+
   const selectionCallBack = (data) => {
+    popInOut.current.classList.remove('pop-outin');
     if (data?.player === "blue" && data?.spot === "selected") {
       setBlueSelection("selected");
       setRedSelection("already playing");
     }
     if (data?.player === "blue" && data?.spot === "not selected") {
-      setResult(null);
-      setResultTimer(3);
+      setResult(3);
+      
       setOnce(1);
       setBlueSelection("not selected");
       setBluePlayerChoice(null);
@@ -262,8 +268,7 @@ const PlayerVsHuman = () => {
       setBlueSelection("already playing");
     }
     if (data?.player === "red" && data?.spot === "not selected") {
-      setResult(null);
-      setResultTimer(3);
+      setResult(3);
       setOnce(1);
       setRedSelection("not selected");
       setRedPlayerChoice(null);
@@ -333,7 +338,7 @@ const PlayerVsHuman = () => {
     }
     if (
       redSelection === "selected" &&
-      resultTimer === 0 &&
+      result === 0 &&
       bluePlayAgain === true
     ) {
       if (blueChoice === "Rock") {
@@ -368,7 +373,7 @@ const PlayerVsHuman = () => {
     }
     if (
       blueSelection === "selected" &&
-      resultTimer === 0 &&
+      result === 0 &&
       redPlayAgain === true
     ) {
       if (redChoice === "Rock") {
@@ -400,9 +405,7 @@ const PlayerVsHuman = () => {
         </div>
         <div style={{ marginLeft: "auto", textAlign: "center" }}>
           {renderResultOnce()}
-
-          <div className="result-timer">{resultTimer}</div>
-          <div className="result-container">{result}</div>
+          <div className="result-container">{renderCountDownResult()}</div>
         </div>
         <div className="render-red-choice">
           Red
