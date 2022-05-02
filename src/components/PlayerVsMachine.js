@@ -4,11 +4,13 @@ import { Button } from "@chakra-ui/react";
 import lostSound from "../sounds/lost-sound.mp3";
 import winSound from "../sounds/win-sound.mp3";
 import clickSound from "../sounds/click-sound.mp3";
+import { Link } from "react-router-dom";
 import beepSound from "../sounds/beep-sound.mp3";
 import robotImage from "../png/robot.png";
 import paper from "../png/paper.png";
 import scissors from "../png/scissors.png";
 import rock from "../png/stone.png";
+import Back from "../svg/Back";
 
 const PlayerVsMachine = () => {
   const [playerChoice, setPlayerChoice] = useState(null);
@@ -197,6 +199,20 @@ const PlayerVsMachine = () => {
     <div
       className="player-vs-machine-container"
     >
+      <Link style={{alignSelf:"normal"}} to="/">
+        
+      <Button
+          size="md"
+          height="48px"
+          width="90px"
+          border="2px"
+          borderColor="pink.500"
+          marginBottom="5px"
+          zIndex="999"
+          colorScheme="pink"
+        ><Back/></Button>
+      </Link>
+      <div className="vs-machine-title">Player vs Machine</div>
       <img style={{width:"150px"}} src={robotImage} alt="robot"></img>
       <div>{renderMachineChoice()} </div>
       <div className="vs-machine-result-container">

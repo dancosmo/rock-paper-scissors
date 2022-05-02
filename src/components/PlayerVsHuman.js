@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { db } from "../firebase";
 import { doc, onSnapshot, updateDoc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 import GameButton from "./GameButton";
 import PlayButtons from "./PlayButtons";
 import User from "../svg/User";
@@ -12,6 +13,9 @@ import lostSound from "../sounds/lost-sound.mp3";
 import winSound from "../sounds/win-sound.mp3";
 import clickSound from "../sounds/click-sound.mp3";
 import beepSound from "../sounds/beep-sound.mp3";
+import { Link } from "react-router-dom";
+import Back from "../svg/Back";
+
 
 const PlayerVsHuman = () => {
   //Player Choices
@@ -32,6 +36,8 @@ const PlayerVsHuman = () => {
 
   const popInOut = useRef(null);
 
+  const navigate = useNavigate();
+
   document.addEventListener('visibilitychange', function(){
     if(document.visibilityState !== 'visible' || document.visibilityState !== 'hidden'){
       if(blueSelection === "selected"){
@@ -39,12 +45,14 @@ const PlayerVsHuman = () => {
           spot: "available",
           playAgain:false,
         });
+        navigate("/");
       }
       if(redSelection === "selected"){
         setDoc(doc(db, "users", "red"), {
           spot: "available",
           playAgain:false,
         });
+        navigate("/");
       }
     }
     else return null;
@@ -414,7 +422,19 @@ const PlayerVsHuman = () => {
 
   return (
     <>
-      <div>Player vs Player</div>
+          <Link to="/">
+      <Button
+          size="md"
+          height="48px"
+          width="90px"
+          border="2px"
+          borderColor="pink.500"
+          marginBottom="5px"
+          zIndex="999"
+          colorScheme="pink"
+        ><Back/></Button>
+      </Link>
+      <div className="vs-player-title">Player vs Player</div>
       <div className="player-vs-player-container">
         <div className="player-blue-container">
           <div>
@@ -449,7 +469,7 @@ const PlayerVsHuman = () => {
           selection={blueSelection}
           playerData={bluePlayerData}
           button="blue"
-          text="Join as Blue"
+          text="Join Blue"
         />
 
         <GameButton
@@ -457,7 +477,7 @@ const PlayerVsHuman = () => {
           selection={redSelection}
           playerData={redPlayerData}
           button="red"
-          text="Join as Red"
+          text="Join Red"
         />
       </div>
     </>

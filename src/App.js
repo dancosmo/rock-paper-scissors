@@ -1,71 +1,35 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
 import PlayerVsMachine from "./components/PlayerVsMachine";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PlayerVsHuman from "./components/PlayerVsHuman";
 import { ChakraProvider } from "@chakra-ui/react";
-import { Button } from "@chakra-ui/react";
+import Home from "./components/Home";
 import Footer from "./components/Footer";
 
+
 function App() {
-  const [selectedVsMachine, setSelectedVsMachine] = useState(false);
-  const [selectedVsHuman, setSelectedVsHuman] = useState(false);
-
-  const renderVsMachine = () => {
-    if (selectedVsMachine === true) {
-      return <PlayerVsMachine />;
-    } else return null;
-  };
-
-  const renderVsHuman = () => {
-    if (selectedVsHuman === true) {
-      return <PlayerVsHuman />;
-    } else return null;
-  };
-
   return (
-    <ChakraProvider>
-      <div className="app">
-        <div className="menu-container">
-        <div className="header">Rock, Paper Scissors ! v0.1</div>
-        <Button
-          size="md"
-          border="2px"
-          borderColor="red.500"
-          marginBottom="5px"
-          marginLeft="10px"
-          colorScheme="pink"
-          onClick={() => {
-            setSelectedVsMachine(true);
-            setSelectedVsHuman(false);
-          }}
-          type="button"
-        >
-          Versus Machine
-        </Button>
-        <Button
-          size="md"
-          border="2px"
-          borderColor="red.500"
-          marginBottom="5px"
-          marginLeft="10px"
-          colorScheme="pink"
-          onClick={() => {
-            setSelectedVsMachine(false);
-            setSelectedVsHuman(true);
-          }}
-          type="button"
-        >
-          Versus Player
-        </Button>
+    <BrowserRouter>
+      <ChakraProvider>
+        <div className="app">
+          <Routes>
+            <Route exact path="/" element={<Home />}></Route>
+            <Route
+              exact
+              path="/Player_Vs_Machine"
+              element={<PlayerVsMachine />}
+            ></Route>
+            <Route
+              exact
+              path="/Player_Vs_Human"
+              element={<PlayerVsHuman />}
+            ></Route>
+          </Routes>
+          <Footer />
         </div>
-        <div className="games-container">
-          {renderVsMachine()}
-          {renderVsHuman()}
-        </div>
-        <Footer />
-      </div>
-      
-    </ChakraProvider>
+      </ChakraProvider>
+    </BrowserRouter>
   );
 }
 
