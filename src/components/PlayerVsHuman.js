@@ -384,6 +384,26 @@ const PlayerVsHuman = () => {
     else return null;
   };
 
+  const cleanAndBackHome = () =>{
+    if(blueSelection === "selected"){
+      setDoc(doc(db, "users", "blue"), {
+        spot: "available",
+        playAgain:false,
+      });
+      navigate("/");
+    }
+    if(redSelection === "selected"){
+      setDoc(doc(db, "users", "red"), {
+        spot: "available",
+        playAgain:false,
+      });
+      navigate("/");
+    }
+    else{
+      navigate("/");
+    }
+  }
+
   const renderRedPlayerChoice = () => {
     const redPlayAgain = redPlayerData?.playAgain;
     const redChoice = redPlayerData?.choice;
@@ -422,7 +442,7 @@ const PlayerVsHuman = () => {
 
   return (
     <>
-          <Link to="/">
+          <Link onClick={() => cleanAndBackHome()} to="/">
       <Button
           size="md"
           height="48px"
