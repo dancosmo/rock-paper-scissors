@@ -39,7 +39,10 @@ const PlayerVsHuman = () => {
   const navigate = useNavigate();
 
   document.addEventListener('visibilitychange', function(){
-    if(document.visibilityState !== 'visible' || document.visibilityState !== 'hidden'){
+    if(document.visibilityState === 'visible'){
+      return null;
+    }
+    else {
       if(blueSelection === "selected"){
         setDoc(doc(db, "users", "blue"), {
           spot: "available",
@@ -55,7 +58,6 @@ const PlayerVsHuman = () => {
         navigate("/");
       }
     }
-    else return null;
   });
 
   useEffect(() => {
