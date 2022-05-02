@@ -36,10 +36,12 @@ const PlayerVsHuman = () => {
 
   const popInOut = useRef(null);
 
+  const playerVsHumanContent = document.getElementById("playerVsHumanContent");
+
   const navigate = useNavigate();
 
-  document.addEventListener('visibilitychange', function(){
-    if(document.visibilityState !== "visible" && document.hidden === true){
+  playerVsHumanContent.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === "hidden"){
       if(blueSelection === "selected"){
         setDoc(doc(db, "users", "blue"), {
           spot: "available",
@@ -441,7 +443,7 @@ const PlayerVsHuman = () => {
   };
 
   return (
-    <>
+    <div id="playerVsHumanContent">
           <Link onClick={() => cleanAndBackHome()} to="/">
       <Button
           size="md"
@@ -500,7 +502,7 @@ const PlayerVsHuman = () => {
           text="Join Red"
         />
       </div>
-    </>
+    </div>
   );
 };
 

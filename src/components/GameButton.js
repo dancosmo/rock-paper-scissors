@@ -34,7 +34,7 @@ const GameButton = ({ text, playerData, button, selection, selectionCallBack }) 
       return (
         <Button margin="2px" size='md'
         border='2px'
-        borderColor='pink.500' colorScheme='green' variant='solid' type="button" onClick={() => playerSelected()}>
+        borderColor='pink.500' colorScheme='teal' variant='solid' type="button" onClick={() => playerSelected()}>
           <div style={{color:`${button}`}}>
           {text}
           </div>
