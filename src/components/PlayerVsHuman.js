@@ -39,7 +39,7 @@ const PlayerVsHuman = () => {
   const navigate = useNavigate();
 
   document.addEventListener("visibilitychange", function() {
-    if(document.visibilityState !== "hidden"){
+    if(document.visibilityState === "hidden"){
         if(blueSelection === "selected"){
           setDoc(doc(db, "users", "blue"), {
             spot: "available",
