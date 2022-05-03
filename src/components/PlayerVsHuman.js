@@ -38,6 +38,24 @@ const PlayerVsHuman = () => {
 
   const navigate = useNavigate();
 
+  document.addEventListener("visibilitychange", function() {
+    if((document.visibilityState === "visible" || document.visibilityState === "hidden") && document.hidden === true){
+        if(blueSelection === "selected"){
+          setDoc(doc(db, "users", "blue"), {
+            spot: "available",
+            playAgain:false,
+          });
+        }
+        if(redSelection === "selected"){
+          setDoc(doc(db, "users", "red"), {
+            spot: "available",
+            playAgain:false,
+          });
+        }
+    }
+    else return null;
+  });
+
   useEffect(() => {
     let blueUserStatus = onSnapshot(doc(db, "users", "blue"), (doc) => {
       setBluePlayerData(doc.data());
