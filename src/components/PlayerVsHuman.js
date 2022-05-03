@@ -36,29 +36,7 @@ const PlayerVsHuman = () => {
 
   const popInOut = useRef(null);
 
-  const playerVsHumanContent = document.getElementById("playerVsHumanContent");
-
   const navigate = useNavigate();
-
-  playerVsHumanContent.addEventListener('visibilitychange', function(){
-    if(document.visibilityState === "hidden"){
-      if(blueSelection === "selected"){
-        setDoc(doc(db, "users", "blue"), {
-          spot: "available",
-          playAgain:false,
-        });
-        navigate("/");
-      }
-      if(redSelection === "selected"){
-        setDoc(doc(db, "users", "red"), {
-          spot: "available",
-          playAgain:false,
-        });
-        navigate("/");
-      }
-    }
-    else return null;
-  });
 
   useEffect(() => {
     let blueUserStatus = onSnapshot(doc(db, "users", "blue"), (doc) => {
