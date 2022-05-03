@@ -45,12 +45,14 @@ const PlayerVsHuman = () => {
             spot: "available",
             playAgain:false,
           });
+          navigate("/");
         }
         if(redSelection === "selected"){
           setDoc(doc(db, "users", "red"), {
             spot: "available",
             playAgain:false,
           });
+          navigate("/");
         }
     }
     else return null;
