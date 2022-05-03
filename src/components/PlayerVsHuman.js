@@ -421,7 +421,7 @@ const PlayerVsHuman = () => {
   };
 
   return (
-    <div id="playerVsHumanContent">
+    <>
           <Link onClick={() => cleanAndBackHome()} to="/">
       <Button
           size="md"
@@ -480,7 +480,7 @@ const PlayerVsHuman = () => {
           text="Join Red"
         />
       </div>
-    </div>
+    </>
   );
 };
 
