@@ -32,7 +32,7 @@ const GameButton = ({ text, playerData, button, selection, selectionCallBack }) 
   const renderGameButton = () => {
     if (spot === "available" && selection === "not selected" && hideButton === "no") {
       return (
-        <Button margin="2px" size='md'
+        <Button margin="10px" size='md'
         border='2px'
         borderColor='pink.500' colorScheme='teal' variant='solid' type="button" onClick={() => playerSelected()}>
           <div style={{color:`${button}`}}>

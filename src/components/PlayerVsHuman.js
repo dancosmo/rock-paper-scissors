@@ -16,11 +16,7 @@ import beepSound from "../sounds/beep-sound.mp3";
 import { Link } from "react-router-dom";
 import Back from "../svg/Back";
 
-
 const PlayerVsHuman = () => {
-  //Player Choices
-  const [bluePlayerChoice, setBluePlayerChoice] = useState(null);
-  const [redPlayerChoice, setRedPlayerChoice] = useState(null);
   //Player Status
   const [bluePlayerData, setBluePlayerData] = useState(null);
   const [redPlayerData, setRedPlayerData] = useState(null);
@@ -28,7 +24,11 @@ const PlayerVsHuman = () => {
   const [blueSelection, setBlueSelection] = useState("not selected");
   const [redSelection, setRedSelection] = useState("not selected");
 
-  const [once, setOnce] = useState(1);
+  const [cleanSpots, setCleanSpots] = useState(false);
+
+  const [runOnce, setRunOnce] = useState(true);
+
+  const [runReset, setRunReset] = useState(true);
 
   const [result, setResult] = useState(3);
 
@@ -36,29 +36,24 @@ const PlayerVsHuman = () => {
 
   const popInOut = useRef(null);
 
+  const cleanSpotsButton = useRef(null);
+
   const navigate = useNavigate();
 
-  document.addEventListener("visibilitychange", function() {
-    if(document.visibilityState === "hidden"){
-        if(blueSelection === "selected"){
-          setDoc(doc(db, "users", "blue"), {
-            spot: "available",
-            playAgain:false,
-          });
-          navigate("/");
-        }
-        if(redSelection === "selected"){
-          setDoc(doc(db, "users", "red"), {
-            spot: "available",
-            playAgain:false,
-          });
-          navigate("/");
-        }
-    }
-    else return null;
-  });
+  const blue = {
+    spot: bluePlayerData?.spot,
+    choice: bluePlayerData?.choice,
+    again: bluePlayerData?.playAgain
+  }
+
+  const red = {
+    spot: redPlayerData?.spot,
+    choice: redPlayerData?.choice,
+    again: redPlayerData?.playAgain
+  }
 
   useEffect(() => {
+
     let blueUserStatus = onSnapshot(doc(db, "users", "blue"), (doc) => {
       setBluePlayerData(doc.data());
     });
@@ -69,47 +64,62 @@ const PlayerVsHuman = () => {
       blueUserStatus();
       redUserStatus();
     };
+
   }, []);
 
-  const closingWindow = () =>{
-    if(blueSelection === "selected"){
-      window.addEventListener('beforeunload', function () {
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible" && document.hidden === true) {
+      if (blueSelection === "selected") {
         setDoc(doc(db, "users", "blue"), {
           spot: "available",
-          playAgain:false,
+          playAgain: false,
         });
-    });
-    }
-    if(redSelection === "selected"){
-      window.addEventListener('beforeunload', function () {
+        navigate("/");
+      }
+      if (redSelection === "selected") {
         setDoc(doc(db, "users", "red"), {
           spot: "available",
-          playAgain:false,
+          playAgain: false,
         });
-    });
+        navigate("/");
+      }
+    } else return null;
+  });
+
+  const closingWindow = () => {
+    if (blueSelection === "selected") {
+      window.addEventListener("beforeunload", function () {
+        setDoc(doc(db, "users", "blue"), {
+          spot: "available",
+          playAgain: false,
+        });
+      });
     }
-    else return null;
-  }
+    if (redSelection === "selected") {
+      window.addEventListener("beforeunload", function () {
+        setDoc(doc(db, "users", "red"), {
+          spot: "available",
+          playAgain: false,
+        });
+      });
+    } else return null;
+  };
   closingWindow();
 
   let countStart = 3;
 
   const renderResultOnce = () => {
     const beep = new Audio(beepSound);
-    const blueChoice = bluePlayerData?.choice;
-    const redChoice = redPlayerData?.choice;
-    const bluePlayAgain = bluePlayerData?.playAgain;
-    const redPlayAgain = redPlayerData?.playAgain;
     if (
-      blueChoice !== undefined &&
-      redChoice !== undefined &&
-      blueChoice !== null &&
-      redChoice !== null &&
-      bluePlayAgain === false &&
-      redPlayAgain === false
+      blue.spot === "not available" &&
+      red.spot === "not available" &&
+      typeof blue.choice ===  "string" &&
+      typeof red.choice === "string" &&
+      blue.again === false &&
+      red.again === false
     ) {
-      console.log("Im working");
-      if (once === 1) {
+      console.log("running result once");
+      if (runOnce === true) {
         let timer = setInterval(function () {
           if (countStart === 0) {
             calculateResult();
@@ -127,12 +137,12 @@ const PlayerVsHuman = () => {
           } else {
             countStart -= 1;
             setResult(countStart);
-            popInOut.current.classList.add('pop-outin');
+            popInOut.current.classList.add("pop-outin");
             setPlayVisible("flex-not-visible");
             beep.play();
           }
         }, 1000);
-        setOnce(0);
+        setRunOnce(false);
       }
     } else return null;
   };
@@ -177,117 +187,131 @@ const PlayerVsHuman = () => {
   };
 
   const playAgain = async () => {
-    popInOut.current.classList.remove('pop-outin');
+    popInOut.current.classList.remove("pop-outin");
     const click = new Audio(clickSound);
     click.play();
     setResult(3);
     setPlayVisible("flex-visible");
     if (blueSelection === "selected") {
-      setBluePlayerChoice(null);
+      
       await updateDoc(doc(db, "users", "blue"), {
         playAgain: false,
         choice: null,
       });
 
-      setOnce(1);
+      setRunOnce(true);
     }
     if (redSelection === "selected") {
-      setRedPlayerChoice(null);
+      
       await updateDoc(doc(db, "users", "red"), {
         playAgain: false,
         choice: null,
       });
-      setOnce(1);
+      setRunOnce(true);
     }
   };
 
   const calculateResult = () => {
-    const blueChoice = bluePlayerData?.choice;
-    const redChoice = redPlayerData?.choice;
     const won = new Audio(winSound);
     const lost = new Audio(lostSound);
     if (blueSelection === "selected") {
-      if (blueChoice === redChoice) {
+      if (blue.choice === red.choice) {
         setResult("It's a Draw!");
         lost.play();
+        console.log(result);
       }
-      if (blueChoice === "Rock" && redChoice === "Paper") {
+      if (blue.choice === "Rock" && red.choice === "Paper") {
         setResult("Red Wins!");
         lost.play();
+        console.log(result);
       }
-      if (blueChoice === "Rock" && redChoice === "Scissors") {
+      if (blue.choice === "Rock" && red.choice === "Scissors") {
         setResult("Blue Wins!");
         won.play();
+        console.log(result);
       }
-      if (blueChoice === "Paper" && redChoice === "Rock") {
+      if (blue.choice === "Paper" && red.choice === "Rock") {
         setResult("Blue Wins!");
         won.play();
+        console.log(result);
       }
-      if (blueChoice === "Paper" && redChoice === "Scissors") {
+      if (blue.choice === "Paper" && red.choice === "Scissors") {
         setResult("Red Wins!");
         lost.play();
-        
+        console.log(result);
       }
-      if (blueChoice === "Scissors" && redChoice === "Paper") {
+      if (blue.choice === "Scissors" && red.choice === "Paper") {
         setResult("Blue Wins!");
         won.play();
+        console.log(result);
       }
-      if (blueChoice === "Scissors" && redChoice === "Rock") {
+      if (blue.choice === "Scissors" && red.choice === "Rock") {
         setResult("Red Wins!");
         lost.play();
+        console.log(result);
       }
     }
     if (redSelection === "selected") {
-      if (blueChoice === redChoice) {
+      if (blue.choice === red.choice) {
         setResult("It's a Draw!");
         lost.play();
+        console.log(result);
       }
-      if (blueChoice === "Rock" && redChoice === "Paper") {
+      if (blue.choice === "Rock" && red.choice === "Paper") {
         setResult("Red Wins!");
         won.play();
+        console.log(result);
       }
-      if (blueChoice === "Rock" && redChoice === "Scissors") {
+      if (blue.choice === "Rock" && red.choice === "Scissors") {
         setResult("Blue Wins!");
         lost.play();
+        console.log(result);
       }
-      if (blueChoice === "Paper" && redChoice === "Rock") {
+      if (blue.choice === "Paper" && red.choice === "Rock") {
         setResult("Blue Wins!");
         lost.play();
+        console.log(result);
       }
-      if (blueChoice === "Paper" && redChoice === "Scissors") {
+      if (blue.choice === "Paper" && red.choice === "Scissors") {
         setResult("Red Wins!");
         won.play();
+        console.log(result);
       }
-      if (blueChoice === "Scissors" && redChoice === "Paper") {
+      if (blue.choice === "Scissors" && red.choice === "Paper") {
         setResult("Blue Wins!");
         lost.play();
+        console.log(result);
       }
-      if (blueChoice === "Scissors" && redChoice === "Rock") {
+      if (blue.choice === "Scissors" && red.choice === "Rock") {
         setResult("Red Wins!");
         won.play();
+        console.log(result);
       }
     }
   };
 
   const renderCountDownResult = () => {
     const finalResult = String(result);
-    if(typeof finalResult === "string"){
-      return <h2 className="result" ref={popInOut}>{finalResult}</h2>
+    if (typeof finalResult === "string") {
+      return (
+        <h2 className="result" ref={popInOut}>
+          {finalResult}
+        </h2>
+      );
     }
-  }
+  };
 
   const selectionCallBack = (data) => {
-    popInOut.current.classList.remove('pop-outin');
+    popInOut.current.classList.remove("pop-outin");
     if (data?.player === "blue" && data?.spot === "selected") {
       setBlueSelection("selected");
       setRedSelection("already playing");
     }
     if (data?.player === "blue" && data?.spot === "not selected") {
       setResult(3);
-      
-      setOnce(1);
+      setRunOnce(true);
       setBlueSelection("not selected");
-      setBluePlayerChoice(null);
+      
       setRedSelection("not selected");
       setPlayVisible("flex-visible");
     }
@@ -297,36 +321,34 @@ const PlayerVsHuman = () => {
     }
     if (data?.player === "red" && data?.spot === "not selected") {
       setResult(3);
-      setOnce(1);
+      setRunOnce(true);
       setRedSelection("not selected");
-      setRedPlayerChoice(null);
+      
       setBlueSelection("not selected");
       setPlayVisible("flex-visible");
     }
   };
 
-  const blueChoiceCallBack = async (choice) => {
+  const blueChoiceCallBack = (choice) => {
     if (choice) {
-      setBluePlayerChoice(choice);
-      await updateDoc(doc(db, "users", "blue"), {
+       updateDoc(doc(db, "users", "blue"), {
         choice: choice,
       });
     } else return null;
   };
 
-  const redChoiceCallBack = async (choice) => {
+  const redChoiceCallBack = (choice) => {
     if (choice) {
-      setRedPlayerChoice(choice);
-      await updateDoc(doc(db, "users", "red"), {
+      
+      updateDoc(doc(db, "users", "red"), {
         choice: choice,
       });
     } else return null;
   };
 
   const renderPlayButtons = () => {
-    const bluePlayAgain = bluePlayerData?.playAgain;
-    const redPlayAgain = redPlayerData?.playAgain;
-    if (blueSelection === "selected" && redPlayAgain === false) {
+
+    if (blueSelection === "selected" && red.again === false && blue.spot === "not available" && typeof blue.choice !== "string") {
       return (
         <PlayButtons
           playVisible={playVisible}
@@ -336,7 +358,7 @@ const PlayerVsHuman = () => {
         />
       );
     }
-    if (redSelection === "selected" && bluePlayAgain === false) {
+    if (redSelection === "selected" && blue.again === false && red.spot === "not available" && typeof red.choice !== "string") {
       return (
         <PlayButtons
           playVisible={playVisible}
@@ -345,105 +367,173 @@ const PlayerVsHuman = () => {
           choiceCallBack={redChoiceCallBack}
         />
       );
-    } else return <>Waiting for players...</>;
+    } 
+    if(blueSelection === "selected" && red.again === true && blue.spot === "not available" && typeof blue.choice === "string"){
+      return null;
+    }
+    if(blueSelection === "selected" && red.again === false && blue.spot === "not available" && typeof blue.choice === "string" && typeof result === "string"){
+      return <div style={{transform:"translateY(-10rem)"}}>Red wants to play again</div>
+    }
+    if(redSelection === "selected" && blue.again === true && red.spot === "not available" && typeof red.choice === "string"){
+      return null;
+    }
+    if(redSelection === "selected" && blue.again === false && red.spot === "not available" && typeof red.choice === "string" && typeof result === "string"){
+      return <div style={{transform:"translateY(-10rem)"}}>Blue wants to play again</div>;
+    }
+    if(redSelection === "not selected" && blueSelection === "not selected"){
+      return null;
+    }
+    else return <div style={{transform:"translateY(-10rem)"}}>Waiting for other player...</div>
   };
 
   const renderBluePlayerChoice = () => {
-    const bluePlayAgain = bluePlayerData?.playAgain;
-    const blueChoice = bluePlayerData?.choice;
-    if (blueSelection === "selected") {
-      if (bluePlayerChoice === "Rock") {
+
+    if (blueSelection === "selected" && blue.spot === "not available") {
+      if (blue.choice === "Rock") {
         return <img src={rock} alt="Rock" style={{ width: "70px" }}></img>;
       }
-      if (bluePlayerChoice === "Paper") {
+      if (blue.choice === "Paper") {
         return <img src={paper} alt="Paper" style={{ width: "70px" }}></img>;
       }
-      if (bluePlayerChoice === "Scissors") {
+      if (blue.choice === "Scissors") {
         return (
           <img src={scissors} alt="Scissors" style={{ width: "70px" }}></img>
         );
       }
     }
-    if (
-      redSelection === "selected" &&
-      result === 0 &&
-      bluePlayAgain === true
-    ) {
-      if (blueChoice === "Rock") {
+    if (redSelection === "selected" && typeof result === "string" && blue.again === true) {
+      if (blue.choice === "Rock") {
         return <img src={rock} alt="Rock" style={{ width: "70px" }}></img>;
       }
-      if (blueChoice === "Paper") {
+      if (blue.choice === "Paper") {
         return <img src={paper} alt="Paper" style={{ width: "70px" }}></img>;
       }
-      if (blueChoice === "Scissors") {
+      if (blue.choice === "Scissors") {
         return (
           <img src={scissors} alt="Scissors" style={{ width: "70px" }}></img>
         );
       }
-    }
-    else return null;
+    } else return null;
   };
 
-  const cleanAndBackHome = () =>{
-    if(blueSelection === "selected"){
+  const cleanAndBackHome = () => {
+    if (blueSelection === "selected") {
       setDoc(doc(db, "users", "blue"), {
         spot: "available",
-        playAgain:false,
+        playAgain: false,
       });
       navigate("/");
     }
-    if(redSelection === "selected"){
+    if (redSelection === "selected") {
       setDoc(doc(db, "users", "red"), {
         spot: "available",
-        playAgain:false,
+        playAgain: false,
       });
       navigate("/");
-    }
-    else{
+    } else {
       navigate("/");
     }
-  }
+  };
 
   const renderRedPlayerChoice = () => {
-    const redPlayAgain = redPlayerData?.playAgain;
-    const redChoice = redPlayerData?.choice;
-    if (redSelection === "selected") {
-      if (redPlayerChoice === "Rock") {
+
+    if (redSelection === "selected" && red.spot === "not available") {
+      if (red.choice === "Rock") {
         return <img src={rock} alt="Rock" style={{ width: "70px" }}></img>;
       }
-      if (redPlayerChoice === "Paper") {
+      if (red.choice === "Paper") {
         return <img src={paper} alt="Paper" style={{ width: "70px" }}></img>;
       }
-      if (redPlayerChoice === "Scissors") {
+      if (red.choice === "Scissors") {
         return (
           <img src={scissors} alt="Scissors" style={{ width: "70px" }}></img>
         );
       }
     }
-    if (
-      blueSelection === "selected" &&
-      result === 0 &&
-      redPlayAgain === true
-    ) {
-      if (redChoice === "Rock") {
+    if (blueSelection === "selected" && typeof result === "string" && red.again === true) {
+      if (red.choice === "Rock") {
         return <img src={rock} alt="Rock" style={{ width: "70px" }}></img>;
       }
-      if (redChoice === "Paper") {
+      if (red.choice === "Paper") {
         return <img src={paper} alt="Paper" style={{ width: "70px" }}></img>;
       }
-      if (redChoice === "Scissors") {
+      if (red.choice === "Scissors") {
         return (
           <img src={scissors} alt="Scissors" style={{ width: "70px" }}></img>
         );
       }
-    }
-    else return null;
+    } else return null;
   };
+
+  const resetSpots = async () =>{
+    
+    await setDoc(doc(db, "users", "blue"), {
+      spot: "available",
+      playAgain:false,
+    });
+    await setDoc(doc(db, "users", "red"), {
+      spot: "available",
+      playAgain:false,
+    });
+    setRunReset(true);
+    setCleanSpots(false);
+  }
+  
+  const renderResetSpotsButton = () =>{
+      if(runReset === true){
+        if((blue.spot === "not available" || red.spot === "not available") && (redSelection === "not selected" && blueSelection === "not selected")){
+          let timer = setTimeout(()=>{
+              setCleanSpots(true);
+              setRunReset(false);
+              clearTimeout(timer);
+          },5000)
+        }
+      }
+      if(cleanSpots === true && (redSelection ==="not selected" && blueSelection ==="not selected") && (blue.spot === "not available" || red.spot === "not available")){
+        return<>
+            <Button
+            ref={cleanSpotsButton}
+            size="md"
+            height="48px"
+            border="2px"
+            borderColor="pink.500"
+            marginBottom="5px"
+            zIndex="999"
+            colorScheme="pink"
+            onClick={() => resetSpots()}
+            
+          >
+            Clean Spots
+          </Button>
+        </>
+      }
+    if(cleanSpots === false && (redSelection ==="not selected" && blueSelection ==="not selected" && (blue.spot === "not available" || red.spot === "not available"))) {
+        return(<>
+                
+          <Button
+          ref={cleanSpotsButton}
+          size="md"
+          height="48px"
+          border="2px"
+          borderColor="pink.500"
+          marginBottom="5px"
+          zIndex="999"
+          colorScheme="pink"
+          onClick={() => resetSpots()}
+          disabled
+        >
+          30 seconds to reset
+        </Button>
+
+        </>)
+      }
+      else return null;
+  }
 
   return (
     <>
-          <Link onClick={() => cleanAndBackHome()} to="/">
-      <Button
+      <Link onClick={() => cleanAndBackHome()} to="/">
+        <Button
           size="md"
           height="48px"
           width="90px"
@@ -452,7 +542,9 @@ const PlayerVsHuman = () => {
           marginBottom="5px"
           zIndex="999"
           colorScheme="pink"
-        ><Back/></Button>
+        >
+          <Back />
+        </Button>
       </Link>
       <div className="vs-player-title">Player vs Player</div>
       <div className="player-vs-player-container">
@@ -483,7 +575,7 @@ const PlayerVsHuman = () => {
       <div className="player-selector-container">
         <div>{playAgainButton()}</div>
         <div>{renderPlayButtons()}</div>
-
+        <div>{renderResetSpotsButton()}</div>
         <GameButton
           selectionCallBack={selectionCallBack}
           selection={blueSelection}
