@@ -85,9 +85,9 @@ const PlayerVsMachine = () => {
     if (typeof countDownResult !== "number") {
       return (
         <Button
-          size="md"
+          size="lg"
           height="48px"
-          width="90px"
+          width="auto"
           border="2px"
           borderColor="blue.500"
           marginBottom="5px"

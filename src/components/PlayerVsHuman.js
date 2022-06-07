@@ -372,18 +372,18 @@ const PlayerVsHuman = () => {
       return null;
     }
     if(blueSelection === "selected" && red.again === false && blue.spot === "not available" && typeof blue.choice === "string" && typeof result === "string"){
-      return <div style={{transform:"translateY(-10rem)"}}>Red wants to play again</div>
+      return <div style={{transform:"translateY(-10rem)", color:"white"}}>Red wants to play again</div>
     }
     if(redSelection === "selected" && blue.again === true && red.spot === "not available" && typeof red.choice === "string"){
       return null;
     }
     if(redSelection === "selected" && blue.again === false && red.spot === "not available" && typeof red.choice === "string" && typeof result === "string"){
-      return <div style={{transform:"translateY(-10rem)"}}>Blue wants to play again</div>;
+      return <div style={{transform:"translateY(-10rem)", color:"white"}}>Blue wants to play again</div>;
     }
     if(redSelection === "not selected" && blueSelection === "not selected"){
       return null;
     }
-    else return <div style={{transform:"translateY(-10rem)"}}>Waiting for other player...</div>
+    else return <div style={{transform:"translateY(-10rem)", color:"white"}}>Waiting for the other player...</div>
   };
 
   const renderBluePlayerChoice = () => {
@@ -496,7 +496,7 @@ const PlayerVsHuman = () => {
             size="md"
             height="48px"
             border="2px"
-            borderColor="pink.500"
+            borderColor="white"
             marginBottom="5px"
             zIndex="999"
             colorScheme="pink"
@@ -515,7 +515,7 @@ const PlayerVsHuman = () => {
           size="md"
           height="48px"
           border="2px"
-          borderColor="pink.500"
+          borderColor="white"
           marginBottom="5px"
           zIndex="999"
           colorScheme="pink"
@@ -538,7 +538,7 @@ const PlayerVsHuman = () => {
           height="48px"
           width="90px"
           border="2px"
-          borderColor="pink.500"
+          borderColor="white"
           marginBottom="5px"
           zIndex="999"
           colorScheme="pink"

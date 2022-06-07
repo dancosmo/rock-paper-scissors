@@ -28,14 +28,14 @@ const VsMachineButton = ({choice, choiceCallBack, image}) => {
         <Button 
         size="md"
         height="48px"
-        width="90px"
+        width="auto"
         border="2px"
-        borderColor="blue.500"
+        borderColor="white"
         marginBottom="5px"
         zIndex="999"
         colorScheme="pink" 
         onClick={() => getChoice()}>
-            <img src={getImage()} alt={`${choice}-icon`}></img>
+            <img width="50px" src={getImage()} alt={`${choice}-icon`}></img>
         </Button>
     );
 }

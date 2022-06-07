@@ -23,7 +23,7 @@ const PlayButtons = ({ button, show, choiceCallBack, playVisible }) => {
         height="48px"
         width="90px"
         border="2px"
-        borderColor="blue.500"
+        borderColor="white"
         marginBottom="5px"
         colorScheme="pink" 
             onClick={(e) => pickChoice(e)}
@@ -38,7 +38,7 @@ const PlayButtons = ({ button, show, choiceCallBack, playVisible }) => {
         height="48px"
         width="90px"
         border="2px"
-        borderColor="blue.500"
+        borderColor="white"
         marginBottom="5px"
         colorScheme="pink" 
             onClick={(e) => pickChoice(e)}
@@ -52,7 +52,7 @@ const PlayButtons = ({ button, show, choiceCallBack, playVisible }) => {
         height="48px"
         width="90px"
         border="2px"
-        borderColor="blue.500"
+        borderColor="white"
         marginBottom="5px"
         colorScheme="pink" 
             onClick={(e) => pickChoice(e)}

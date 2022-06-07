@@ -34,7 +34,7 @@ const GameButton = ({ text, playerData, button, selection, selectionCallBack }) 
       return (
         <Button margin="10px" size='md'
         border='2px'
-        borderColor='pink.500' colorScheme='teal' variant='solid' type="button" onClick={() => playerSelected()}>
+        borderColor='white' colorScheme='yellow' variant='solid' type="button" onClick={() => playerSelected()}>
           <div style={{color:`${button}`}}>
           {text}
           </div>
@@ -43,14 +43,14 @@ const GameButton = ({ text, playerData, button, selection, selectionCallBack }) 
     }
     if (spot === "not available" && selection === 'selected' && hideButton === "yes") {
       return (
-        <Button colorScheme='pink' variant='solid' type="button" onClick={() => playerLeft()}>
+        <Button borderColor="white" colorScheme='pink' variant='solid' type="button" onClick={() => playerLeft()}>
           Leave 
         </Button>
       );
     }
     if (spot === "available" && selection === 'selected' && hideButton === "yes") {
       return (
-        <Button colorScheme='pink' variant='solid' type="button" onClick={() => playerLeft()}>
+        <Button borderColor="white" colorScheme='pink' variant='solid' type="button" onClick={() => playerLeft()}>
           Leave 
         </Button>
       );
